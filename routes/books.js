@@ -32,13 +32,27 @@ bookRoutes.get('/:id', async (req, res) => {
 
 // POST: add book (admin only)
 bookRoutes.post('/', checkAdmin, async (req, res) => {
-    const { title, author, genre, image_url, description, published } = req.body;
-    const result = await pgclient.query(
-        `INSERT INTO books (title, author, genre, image_url, description, published)
-         VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
-        [title, author, genre, image_url, description, published]
-    );
-    res.status(201).json(result.rows[0]);
+    try {
+        const { title, author, genre, image_url, description, published } = req.body;
+
+        // ✅ Defensive fallback
+        if (!title || !author || !genre) {
+            return res.status(400).json({ message: "Title, author, and genre are required." });
+        }
+
+        const finalPublished = published?.trim() === '' ? null : published;
+
+        const result = await pgclient.query(
+            `INSERT INTO books (title, author, genre, image_url, description, published)
+             VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+            [title, author, genre, image_url, description, finalPublished]
+        );
+
+        res.status(201).json(result.rows[0]);
+    } catch (err) {
+        console.error("Error inserting book:", err);
+        res.status(500).json({ message: "Internal server error" });
+    }
 });
 
 // PUT: edit book
