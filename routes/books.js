@@ -10,6 +10,26 @@ bookRoutes.get('/', async (req, res) => {
     res.json(result.rows);
 });
 
+// GET: get book by ID
+bookRoutes.get('/:id', async (req, res) => {
+    try {
+        const result = await pgclient.query(
+            "SELECT * FROM books WHERE id = $1",
+            [req.params.id]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: "Book not found" });
+        }
+
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error("Error fetching book by ID:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+
+
 // POST: add book (admin only)
 bookRoutes.post('/', checkAdmin, async (req, res) => {
     const { title, author, genre, image_url, description, published } = req.body;
