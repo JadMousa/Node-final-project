@@ -35,7 +35,6 @@ bookRoutes.post('/', checkAdmin, async (req, res) => {
     try {
         const { title, author, genre, image_url, description, published } = req.body;
 
-        // ✅ Defensive fallback
         if (!title || !author || !genre) {
             return res.status(400).json({ message: "Title, author, and genre are required." });
         }
