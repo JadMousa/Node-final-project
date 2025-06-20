@@ -5,7 +5,7 @@ import userRoutes from './routes/users.js';
 import bookRoutes from './routes/books.js';
 import reservationRoutes from './routes/reservations.js';
 import pgclient from './db.js';
-
+import cors from 'cors';
 
 const app = express();
 dotenv.config();
