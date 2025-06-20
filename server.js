@@ -9,30 +9,8 @@ import pgclient from './db.js';
 const app = express();
 dotenv.config();
 
-const allowedOrigins = [
-    'https://react-final-project-production-2603.up.railway.app',
-    'http://localhost:3000'
-];
-
-app.use(cors({
-    origin: function (origin, callback) {
-        // Allow requests with no origin (like mobile apps or curl requests)
-        if (!origin) return callback(null, true);
-        
-        if (allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            console.log('Blocked by CORS:', origin); // Helpful for debugging
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Explicit methods
-    allowedHeaders: ['Content-Type', 'Authorization'] // Explicit headers
-}));
-
-// Handle OPTIONS requests explicitly
-app.options('*', cors()); // Enable preflight for all routes
+// Middleware
+app.use(cors());
 app.use(express.json());
 
 // Register your routes here:
@@ -40,7 +18,8 @@ app.use('/api/users', userRoutes);
 app.use('/api/books', bookRoutes);
 app.use('/api/reservations', reservationRoutes);
 
-const PORT = process.env.PORT || 3002;
+const PORT = process.env.PORT;
+
 
 // Default and test
 app.get('/', (req, res) => res.send('Library Home Route'));
@@ -51,11 +30,11 @@ app.use((req, res) => res.status(404).json({ message: 'Route not found' }));
 
 // Start server
 pgclient.connect()
-  .then(() => {
-    app.listen(PORT, '0.0.0.0', () => {
-      console.log(`Server running on port ${PORT}`);
+    .then(() => {
+        app.listen(PORT, () => {
+            console.log(`Server running on port ${PORT}`);
+        });
+    })
+    .catch(err => {
+        console.error('Error connecting to PostgreSQL:', err);
     });
-  })
-  .catch(err => {
-    console.error('Error connecting to PostgreSQL:', err);
-  });
