@@ -43,11 +43,11 @@ app.use((req, res) => res.status(404).json({ message: 'Route not found' }));
 
 // Start server
 pgclient.connect()
-    .then(() => {
-        app.listen(PORT, () => {
-            console.log(`Server running on port ${PORT}`);
-        });
-    })
-    .catch(err => {
-        console.error('Error connecting to PostgreSQL:', err);
+  .then(() => {
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`Server running on port ${PORT}`);
     });
+  })
+  .catch(err => {
+    console.error('Error connecting to PostgreSQL:', err);
+  });
