@@ -31,8 +31,6 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization'] // Explicit headers
 }));
 
-// Handle OPTIONS requests explicitly
-app.options('*', cors()); // Enable preflight for all routes
 app.use(express.json());
 
 // Register your routes here:
