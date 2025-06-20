@@ -11,14 +11,20 @@ dotenv.config();
 
 const allowedOrigins = [
     'https://react-final-project-production-2603.up.railway.app',
-    'http://localhost:3000' // Optional for local testing
-  ];
+    'http://localhost:3000'
+];
 
-// Middleware
 app.use(cors({
-    origin: allowedOrigins,
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true
-  }));
+}));
+
 app.use(express.json());
 
 // Register your routes here:
