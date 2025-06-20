@@ -9,8 +9,16 @@ import pgclient from './db.js';
 const app = express();
 dotenv.config();
 
+const allowedOrigins = [
+    'https://react-final-project-production-2603.up.railway.app',
+    'http://localhost:3000' // Optional for local testing
+  ];
+
 // Middleware
-app.use(cors());
+app.use(cors({
+    origin: allowedOrigins,
+    credentials: true
+  }));
 app.use(express.json());
 
 // Register your routes here:
