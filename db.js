@@ -6,7 +6,8 @@ dotenv.config();
 const { Pool } = pkg;
 
 const pgclient = new Pool({
-  connectionString: process.env.DATABASE_URL, // or use user, password, host, etc.
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
 });
 
 export default pgclient;
