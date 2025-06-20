@@ -16,15 +16,23 @@ const allowedOrigins = [
 
 app.use(cors({
     origin: function (origin, callback) {
-        if (!origin || allowedOrigins.includes(origin)) {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+        
+        if (allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
+            console.log('Blocked by CORS:', origin); // Helpful for debugging
             callback(new Error('Not allowed by CORS'));
         }
     },
-    credentials: true
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Explicit methods
+    allowedHeaders: ['Content-Type', 'Authorization'] // Explicit headers
 }));
 
+// Handle OPTIONS requests explicitly
+app.options('*', cors()); // Enable preflight for all routes
 app.use(express.json());
 
 // Register your routes here:
