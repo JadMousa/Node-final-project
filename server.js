@@ -13,7 +13,8 @@ const allowedOrigins = [
     'https://react-final-project-production-2603.up.railway.app',
     'http://localhost:3000'
 ];
-app.use(cors({
+// ✅ Define full CORS options
+const corsOptions = {
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
@@ -25,10 +26,11 @@ app.use(cors({
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'user-email']
-}));
+};
 
-// Explicitly handle preflight OPTIONS
-app.options('*', cors());
+// ✅ Apply to all routes
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));  // For preflight requests
 
 
 app.use(express.json());
