@@ -14,11 +14,21 @@ const allowedOrigins = [
     'http://localhost:3000'
 ];
 app.use(cors({
-  origin: '*',
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.log('❌ CORS blocked:', origin);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'user-email']
 }));
+
+// Explicitly handle preflight OPTIONS
+app.options('*', cors());
 
 
 app.use(express.json());
